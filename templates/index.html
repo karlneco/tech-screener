@@ -1,0 +1,65 @@
+<html>
+<head>
+    <script src="https://cdn.plot.ly/plotly-2.9.0.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+            margin: 20px;
+        }
+        td {
+            padding: 10px;
+        }
+        .bullish {
+            background: green;
+            color: white;
+        }
+        .bearish {
+            background: red;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Candlestick Screener</h1>
+<form>
+    Pattern:
+    <select name="pattern">
+        {% for p in patterns %}
+        <option value="{{p}}" {% if p==selected %} selected {% endif %}>{{patterns[p]}}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Scan..."/>
+</form>
+<table width="100%">
+    <tr>
+        <th>Symbol</th>
+        <th>Company Name</th>
+        <th>Signal</th>
+    </tr>
+{% for stock in stocks %}
+    {% if stocks[stock][selected] %}
+    <tr>
+        <td>{{stock}}</td>
+        <td>{{stocks[stock]['company']}}</td>
+        <td class="{{stocks[stock][selected]}}">{{stocks[stock][selected]}}</td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <div id="g_{{stock}}">
+
+            </div>
+
+            <script type="text/javascript">
+                var g_{{stock}}_data={{graphs[stock] | safe}}
+                Plotly.newPlot('g_{{stock}}',g_{{stock}}_data)
+            </script>
+        </td>
+    </tr>
+    {% endif %}
+{% endfor %}
+    </table>
+
+</body>
+</html>
